@@ -1,98 +1,120 @@
 data segment
-    ; mensajes en consola
+    ; Mensajes mostrados en pantalla
     bienvenida db "Bienvenido a ConverTec", 0Dh, 0Ah, "Por favor indique que tipo de conversion desea realizar:", 0Dh, 0Ah, "Presione:", 0Dh, 0Ah, "$"
-    temperatura db "1. Fahrenheit a Celsius", 0Dh, 0Ah, "2. Celsius a Kelvin", 0Dh, 0Ah, "3. Kelvin a Celsius", 0Dh, 0Ah, "4. Fahrenheit a Kelvin", 0Dh, 0Ah, "$"
-    distancia1 db "5. Pulgadas a Centimetros", 0Dh, 0Ah, "6. Pies a Centimetros", 0Dh, 0Ah, "7. Yardas a Centimetros", 0Dh, 0Ah, "8. Millas a Kilometros", 0Dh, 0Ah, "$"
-    distancia2 db "9. Centimetros a Pulgadas", 0Dh, 0Ah, "10. Centimetros a Pies", 0Dh, 0Ah, "11. Centimetros a Yardas", 0Dh, 0Ah, "12. Kilometros a Millas", 0Dh, 0Ah, "$"  
-    masa db "13. Onzas a Kilos", 0Dh, 0Ah, "14. Libras a Kilos", 0Dh, 0Ah, "15. Toneladas a Kilos", 0Dh, 0Ah, "16. Kilos a Onzas", 0Dh, 0Ah, "17. Kilos a Libras", 0Dh, 0Ah, "18. Kilos a Toneladas", 0Dh, 0Ah, "$"
-    input_prompt db "Por favor ingrese el valor a convertir: $"
-    result_msg db "El resultado es: $"
+    menu_principal db "1. temperatura", 0Dh, 0Ah,"2. Longitud", 0Dh, 0Ah,"3. Masa", 0Dh, 0Ah, "$"
+    
+    
+    ; Opciones de conversion para cada categoria
+    opciones_temperatura db "1. Fahrenheit a Celsius", 0Dh, 0Ah,"2. Celsius a Fahrenheit", 0Dh, 0Ah,"3. Celsius a Kelvin", 0Dh, 0Ah,"4. Kelvin a Celsius", 0Dh, 0Ah,"5. Fahrenheit a Kelvin", 0Dh, 0Ah,"6. Kelvin a Fahrenheit", 0Dh, 0Ah, "$"
+    
+    opciones_longitud db "1. Pulgadas a Centimetros", 0Dh, 0Ah,"2. Pies a Centimetros ", 0Dh, 0Ah,"3. Yardas a centimetros", 0Dh, 0Ah,"4. Millas a kilometros", 0Dh, 0Ah,"5. Centimetros a Pulgadas", 0Dh, 0Ah,"6. Centimetros a Pies", 0Dh, 0Ah,"7. Centimetros a Yardas", 0Dh, 0Ah,"8. Kilometros a Millas", 0Dh, 0Ah, "$"
+    
+    opciones_masa db "1. Onzas a Kilos", 0Dh, 0Ah, "2. Libras a Kilos", 0Dh, 0Ah, "3. Toneladas a Kilos", 0Dh, 0Ah, "4. Kilos a Onzas", 0Dh, 0Ah, "5. Kilos a Libras", 0Dh, 0Ah, "6. Kilos a Toneladas", 0Dh, 0Ah, "$"
+    
+    valor_entrada db "Por favor ingrese el valor: $"
+    result_msg db "El resultado de la conversion es: $"
     continue_msg db "Presione 1 para continuar o 2 para salir: $"
     invalid_msg db "Opcion invalida, por favor intente de nuevo.", 0Dh, 0Ah, "$"
-    buffer db 10 dup('$')  ; Buffer para almacenar la entrada del usuario
-    result db 10 dup('$')   ; Buffer para almacenar el resultado
-    newline db 0Dh, 0Ah, "$"  ; Salto de linea
+    buffer db 10 dup('$')  
+    result db 10 dup('$')  
+    newline db 0Dh, 0Ah, "$"  
 ends
 
 stack segment
-    dw   128  dup(0)
+    dw 128 dup(0)
 ends
 
 code segment
-start:
+start:  
     ; Inicializa los segmentos 
     mov ax, data
     mov ds, ax
     mov es, ax
-
     ; Mostrar mensaje de bienvenida
     lea dx, bienvenida
     mov ah, 9
     int 21h
-
     ; Mostrar opciones de conversion
-    lea dx, temperatura
-    mov ah, 9
-    int 21h
-    lea dx, distancia1
-    mov ah, 9
-    int 21h
-    lea dx, distancia2
-    mov ah, 9
-    int 21h
-    lea dx, masa
+    lea dx, menu_principal
     mov ah, 9
     int 21h
 
-    ; Leer la seleccion del usuario
     mov ah, 1
     int 21h
-    sub al, '0'  ; Convertir el caracter a numero   
-    
-    
+    sub al, '0'  
 
-    ; Comparar la seleccion del usuario
-    cmp al, 1
-    je fahrenheit_to_celsius
+    cmp al, 1  
+    je conversiones_temperatura
     cmp al, 2
-    je celsius_to_kelvin
+    je conversiones_longitud
     cmp al, 3
-    je kelvin_to_celsius
-    cmp al, 4
-    je fahrenheit_to_kelvin
-    ; Agregar mas comparaciones para las otras opciones...
-
-    ; Si la opcion no es valida
+    je conversiones_masa
+      
     jmp invalid_option
+    
+;Un segundo menu para elegir cual conversion especifica dentro de cada categoria temperatura
 
-fahrenheit_to_celsius:
-
-    ; Mostrar mensaje para ingresar la temperatura en Fahrenheit
-    lea dx, input_prompt
+conversiones_temperatura:
+    ; Inicializa los segmentos 
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+    
+    
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    
+    ; Muestra las opciones de conversion de temperatura
+    lea dx, opciones_temperatura
     mov ah, 9
     int 21h
 
-    ; Leer la entrada del usuario
-    call read_input  ; Lee la entrada y la convierte a un número en AX
+    mov ah, 1
+    int 21h
+    sub al, '0'  ; Convierte la entrada de caracter a numero
+    
+    
+    ;Compara la opcion seleccionada para redirigir a la conversion correspondiente
 
-    ; Convertir Fahrenheit a Celsius
-    ; Fórmula: C = (5/9) * (F - 32)
-    ; Primero, restamos 32
-    sub ax, 32
+    cmp al, 1  
+    je fahrenheit_celsius
+    cmp al, 2
+    je celsius_fahrenheit
+    cmp al, 3
+    je celsius_kelvin
+    cmp al, 4
+    je kelvin_celsius
+    cmp al, 5
+    je fahrenheit_kelvin
+    cmp al, 6
+    je kelvin_fahrenheit
+      
+    jmp invalid_option  ; Si no se selecciona una opcion valida, muestra mensaje de error
 
-    ; Multiplicar por 5
-    mov bx, 5
-    mul bx           ; AX = AX * 5
+; Conversion de Fahrenheit a Celsius
+   
 
-    ; Dividir por 9
+fahrenheit_celsius:
+    
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    sub ax, 32         
+    mov bx, 5  
+    mul bx
     mov bx, 9
-    div bx           ; AX = AX / 9
+    div bx      
 
-    ; El resultado está en AX
-    ; Convertir el resultado a una cadena para mostrarlo
-    call int_to_string
+    call int_to_string  
 
-    ; Mostrar el resultado
+    lea dx, newline
+    mov ah, 9
+    int 21h
     lea dx, result_msg
     mov ah, 9
     int 21h
@@ -103,123 +125,359 @@ fahrenheit_to_celsius:
     mov ah, 9
     int 21h
 
-    ; Preguntar si desea continuar
-    jmp ask_continue
+    jmp ask_continue   
+    
 
-celsius_to_kelvin:
-    ; Implementar la conversion de Celsius a Kelvin
-    ; Similar a fahrenheit_to_celsius
-    jmp ask_continue
+; Conversion de celsius a fahrenheit
 
-kelvin_to_celsius:
-    ; Implementar la conversion de Kelvin a Celsius
-    ; Similar a fahrenheit_to_celsius
-    jmp ask_continue
+celsius_fahrenheit:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
 
-fahrenheit_to_kelvin:
-    ; Implementar la conversion de Fahrenheit a Kelvin
-    ; Similar a fahrenheit_to_celsius
-    jmp ask_continue
+    call read_input  
+    
+    ; FORMULA
+    mov bx, 9   
+    mul bx        
+    mov bx, 5  
+    div bx
+    add ax, 32        
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue  ; Pregunta si desea continuar o salir  
+    
+
+; Conversion de celsius a kelvin
+celsius_kelvin:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    add ax, 273                
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue   ; Pregunta si desea continuar o salir
+
+; Conversion de kelvin a celsius
+kelvin_celsius:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    sub ax, 273                
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue    ; Pregunta si desea continuar o salir
+
+
+; Conversion de  fahrenheit a kelvin 
+fahrenheit_kelvin:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+
+     ; FORMULA  
+    sub ax, 32        
+    mov bx, 5  
+    mul bx  
+    mov bx, 9
+    div bx
+    add ax, 273    
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue    ; Pregunta si desea continuar o salir
+
+
+; Conversion de kelvin a fahrenheit
+kelvin_fahrenheit:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    sub ax, 273
+    mov bx, 9   
+    mul bx        
+    mov bx, 5  
+    div bx
+    add ax, 32
+    
+                 
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue    ; Pregunta si desea continuar o salir
+
+
+                     
+;Un segundo menu para elegir cual conversion especifica dentro de cada categoria longitud                     
+conversiones_longitud:
+    ; Inicializa los segmentos 
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+    
+    
+    ; Mostrar opciones de conversion
+    
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    
+    lea dx, opciones_longitud
+    mov ah, 9
+    int 21h
+
+    mov ah, 1
+    int 21h
+    sub al, '0'  
+
+    cmp al, 1  
+    je libras_a_kilos
+    cmp al, 2
+    je libras_a_kilos
+    cmp al, 3
+    je libras_a_kilos
+    cmp al, 4
+    je libras_a_kilos
+    cmp al, 5
+    je libras_a_kilos
+    cmp al, 6
+    je libras_a_kilos
+      
+    jmp invalid_option
+    
+    
+;Un segundo menu para elegir cual conversion especifica dentro de cada categoria segmentos
+conversiones_masa:
+    ; Inicializa los segmentos 
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+    
+    
+    ; Mostrar opciones de conversion
+    
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    
+    lea dx, opciones_masa
+    mov ah, 9
+    int 21h
+
+    mov ah, 1
+    int 21h
+    sub al, '0'  
+
+    cmp al, 1  
+    je libras_a_kilos
+    cmp al, 2
+    je libras_a_kilos
+    cmp al, 3
+    je libras_a_kilos
+    cmp al, 4
+    je libras_a_kilos
+    cmp al, 5
+    je libras_a_kilos
+    cmp al, 6
+    je libras_a_kilos
+      
+    jmp invalid_option
+
+        
+      
+;Se realiza la conversion de libras a kilos
+libras_a_kilos:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+
+    mov bx, 454   
+    mul bx        
+    mov bx, 1000  
+    div bx        
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue   
+    
+
 
 invalid_option:
-    ; Mostrar mensaje de opcion invalida
     lea dx, invalid_msg
     mov ah, 9
     int 21h
     jmp start
 
 ask_continue:
-    ; Preguntar si desea continuar
     lea dx, continue_msg
     mov ah, 9
     int 21h
-    ; Leer la seleccion del usuario
     mov ah, 1
     int 21h
-    sub al, '0'
-    cmp al, 1
-    je start  ; Volver al inicio si el usuario desea continuar
-    ; Salir si el usuario selecciona 2
-    mov ax, 4c00h
-    int 21h
+    sub al, '0'   
 
+    cmp al, 1
+    je start  
+    cmp al, 2
+    je exit  
+
+; Funcion para leer la entrada de datos y guardarla en un buffer
 read_input:
-    ; Leer la entrada del usuario y convertirla a un número en AX
-    ; Usamos la interrupción 21h, AH = 0Ah para leer una cadena
     lea dx, buffer
     mov ah, 0Ah
     int 21h
 
-    ; Eliminar el 0Dh (retorno de carro) de la cadena
-    lea si, buffer + 1  ; Saltar el primer byte (longitud de la cadena)
-    mov cl, [si]        ; Cargar la longitud de la cadena en CL
-    xor ch, ch          ; Limpiar CH
-    add si, cx          ; Mover SI al final de la cadena
-
-    ; Asegurarnos de que el 0Dh sea reemplazado por el carácter nulo 0
-    cmp byte ptr [si], 0Dh  ; Verificar si es el 0Dh (Enter)
-    je replace_return
-    jmp convert_done
-
-replace_return:
-    mov byte ptr [si], 0  ; Reemplazar 0Dh con 0 (fin de cadena)
-
-    ; Convertir la cadena a un número
-    lea si, buffer + 2  ; Volver al inicio de la cadena (después del byte de longitud)
-    mov cx, 0           ; Inicializar el contador
-    mov ax, 0           ; Inicializar el resultado
+    lea si, buffer + 2  
+    mov cx, 0           
+    mov ax, 0           
 
 convert_loop:
-    mov bl, [si]        ; Leer un caracter de la cadena
-    cmp bl, 0           ; Verificar si es el final de la cadena
-    je convert_done     ; Si es el final de la cadena, terminar la conversión
-    cmp bl, '0'         ; Verificar si es un digito
-    jb convert_done     ; Si no es un digito, terminar la conversion
+    mov bl, [si]        
+    cmp bl, 0           
+    je convert_done     
+    cmp bl, '0'         
+    jb convert_done     
     cmp bl, '9'
-    ja convert_done     ; Si no es un digito, terminar la conversion
+    ja convert_done     
 
-    sub bl, '0'         ; Convertir el caracter a número
+    sub bl, '0'         
     mov dx, 10
-    mul dx              ; Multiplicar AX por 10
-    add ax, bx          ; Sumar el dígito actual
-    inc si              ; Mover al siguiente carácter
-    jmp convert_loop
+    mul dx              
+    add ax, bx          
+    inc si              
+    jmp convert_loop    
 
 convert_done:
     ret
 
-
-
 int_to_string:
-    ; Convertir el número en AX a una cadena en 'result'
-    ; Suponemos que el número es positivo y menor a 1000
     lea di, result
-    mov cx, 10          ; Base 10
-    mov bx, 0           ; Contador de dígitos
-
+    mov cx, 10          
+    mov bx, 0           
+               
+               
+; Funcion para convertir un numero entero a su representacion en string               
 convert_to_string_loop:
-    xor dx, dx          ; Limpiar DX para la división
-    div cx              ; AX = AX / 10, DX = AX % 10
-    add dl, '0'         ; Convertir el residuo a carácter
-    push dx             ; Guardar el carácter en la pila
-    inc bx              ; Incrementar el contador de dígitos
-    cmp ax, 0           ; Verificar si AX es 0
+    xor dx, dx          
+    div cx              
+    add dl, '0'         
+    push dx             
+    inc bx              
+    cmp ax, 0           
     jne convert_to_string_loop
 
-    ; Extraer los caracteres de la pila y almacenarlos en 'result'
     lea di, result
 store_loop:
-    pop dx              ; Extraer un carácter de la pila
-    mov [di], dl        ; Almacenar el carácter en 'result'
-    inc di              ; Mover al siguiente byte
-    dec bx              ; Decrementar el contador de dígitos
-    cmp bx, 0           ; Verificar si ya se extrajeron todos los dígitos
+    pop dx              
+    mov [di], dl        
+    inc di              
+    dec bx              
+    cmp bx, 0           
     jne store_loop
 
-    ; Agregar el carácter nulo al final de la cadena
     mov byte ptr [di], '$'
-    ret
+    ret 
+
+; Salir del programa
+exit:
+    mov ax, 4C00h
+    int 21h
 
 ends
-
-end start ; set entry point and stop the assembler.
