@@ -139,9 +139,9 @@ celsius_fahrenheit:
     
     ; FORMULA
     mov bx, 9   
-    mul bx        
+    imul bx        
     mov bx, 5  
-    div bx
+    idiv bx
     add ax, 32        
 
     call int_to_string  
@@ -290,7 +290,7 @@ kelvin_fahrenheit:
 
 
                      
-;Un segundo menu para elegir cual conversion especifica dentro de cada categoria longitud                     
+;Un segundo menu para elegir cual conversion especifica dentro de cada categoria                      
 conversiones_longitud:
     ; Inicializa los segmentos 
     mov ax, data
@@ -313,22 +313,293 @@ conversiones_longitud:
     sub al, '0'  
 
     cmp al, 1  
-    je libras_a_kilos
+    je pulgadas_centimetros
     cmp al, 2
-    je libras_a_kilos
+    je pies_centimetros
     cmp al, 3
-    je libras_a_kilos
+    je yardas_centimetros
     cmp al, 4
-    je libras_a_kilos
+    je millas_kilometros
     cmp al, 5
-    je libras_a_kilos
+    je centimetros_pulgadas
     cmp al, 6
-    je libras_a_kilos
+    je centimetros_pies
+    cmp al, 7
+    je centimetros_yardas
+    cmp al, 8
+    je kilometros_millas
       
     jmp invalid_option
+
+;Realiza la conversion de pulgadas a centimetros
+pulgadas_centimetros:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    mov bx, 254   
+    mul bx        
+    mov bx, 100  
+    div bx
+    
+                 
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue    ; Pregunta si desea continuar o salir 
     
     
-;Un segundo menu para elegir cual conversion especifica dentro de cada categoria segmentos
+;Realiza la conversion de pies a centimetros
+pies_centimetros:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    mov bx, 3048   
+    mul bx        
+    mov bx, 100  
+    div bx
+    
+                 
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue    ; Pregunta si desea continuar o salir  
+    
+    
+;Realiza la conversion de yardas a centimetros
+yardas_centimetros:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    mov bx, 9144   
+    mul bx        
+    mov bx, 100  
+    div bx
+    
+                 
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue    ; Pregunta si desea continuar o salir    
+    
+    
+    
+;Realiza la conversion de millas a kilometros
+millas_kilometros:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    mov bx, 1609   
+    mul bx        
+    mov bx, 1000  
+    div bx
+    
+                 
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue    ; Pregunta si desea continuar o salir
+    
+     
+;Realiza la conversion de centimetros a pulgadas
+centimetros_pulgadas:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    mov bx, 100   
+    mul bx        
+    mov bx, 254  
+    div bx
+    
+                 
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h         
+    
+    
+;Realiza la conversion de centimetros a pies
+centimetros_pies:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    mov bx, 100   
+    mul bx        
+    mov bx, 3048  
+    div bx
+    
+                 
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h          
+    
+    
+;Realiza la conversion de centimetros a yardas
+centimetros_yardas:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    mov bx, 100   
+    mul bx        
+    mov bx, 9144  
+    div bx
+    
+                 
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    
+       
+;Realiza la conversion de kilometros a millas     
+
+kilometros_millas:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+    
+    ; FORMULA
+    mov bx, 1000   
+    mul bx        
+    mov bx, 1609  
+    div bx
+    
+                 
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h 
+
+    
+    
+;Un segundo menu para elegir cual conversion especifica dentro de cada categoria 
+
 conversiones_masa:
     ; Inicializa los segmentos 
     mov ax, data
@@ -351,31 +622,119 @@ conversiones_masa:
     sub al, '0'  
 
     cmp al, 1  
-    je libras_a_kilos
+    je onzas_kilos
     cmp al, 2
-    je libras_a_kilos
+    je libras_kilos
     cmp al, 3
-    je libras_a_kilos
+    je toneladas_kilos
     cmp al, 4
-    je libras_a_kilos
+    je kilos_onzas
     cmp al, 5
-    je libras_a_kilos
+    je kilos_libras
     cmp al, 6
-    je libras_a_kilos
+    je kilos_toneladas
       
     jmp invalid_option
 
         
       
-;Se realiza la conversion de libras a kilos
-libras_a_kilos:
+;Realiza la conversion de Onzas a Kilos
+
+onzas_kilos:
     lea dx, valor_entrada
     mov ah, 9
     int 21h
 
     call read_input  
 
-    mov bx, 454   
+    mov bx, 1000   
+    mul bx        
+    mov bx, 35274  
+    div bx        
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue
+
+libras_kilos:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+
+    mov bx, 1000   
+    mul bx        
+    mov bx, 2205  
+    div bx        
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue      
+    
+
+toneladas_kilos:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+
+    mov bx, 1000   
+    mul bx        
+         
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue
+    
+kilos_onzas:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+
+    mov bx, 35274   
     mul bx        
     mov bx, 1000  
     div bx        
@@ -395,8 +754,67 @@ libras_a_kilos:
     mov ah, 9
     int 21h
 
-    jmp ask_continue   
+    jmp ask_continue
     
+    
+
+kilos_libras:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+
+    mov bx, 2205   
+    mul bx        
+    mov bx, 1000  
+    div bx        
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue 
+    
+    
+    
+kilos_toneladas:
+    lea dx, valor_entrada
+    mov ah, 9
+    int 21h
+
+    call read_input  
+       
+    mov bx, 1000  
+    div bx        
+
+    call int_to_string  
+
+    lea dx, newline
+    mov ah, 9
+    int 21h
+    lea dx, result_msg
+    mov ah, 9
+    int 21h
+    lea dx, result
+    mov ah, 9
+    int 21h
+    lea dx, newline
+    mov ah, 9
+    int 21h
+
+    jmp ask_continue
 
 
 invalid_option:
