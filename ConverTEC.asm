@@ -104,11 +104,11 @@ fahrenheit_celsius:
     call read_input  
     
     ; FORMULA
-    sub ax, 32         
+    sub ax, 3200      ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas   
     mov bx, 5  
-    mul bx
+    imul bx
     mov bx, 9
-    div bx      
+    idiv bx      
 
     call int_to_string  
 
@@ -142,7 +142,7 @@ celsius_fahrenheit:
     imul bx        
     mov bx, 5  
     idiv bx
-    add ax, 32        
+    add ax, 3200     ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas    
 
     call int_to_string  
 
@@ -171,7 +171,7 @@ celsius_kelvin:
     call read_input  
     
     ; FORMULA
-    add ax, 273                
+    add ax, 27300      ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas           
 
     call int_to_string  
 
@@ -199,7 +199,7 @@ kelvin_celsius:
     call read_input  
     
     ; FORMULA
-    sub ax, 273                
+    sub ax, 27300      ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas           
 
     call int_to_string  
 
@@ -228,12 +228,12 @@ fahrenheit_kelvin:
     call read_input  
 
      ; FORMULA  
-    sub ax, 32        
+    sub ax, 3200       ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas  
     mov bx, 5  
-    mul bx  
+    imul bx  
     mov bx, 9
-    div bx
-    add ax, 273    
+    idiv bx
+    add ax, 27315     ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas
 
     call int_to_string  
 
@@ -262,12 +262,12 @@ kelvin_fahrenheit:
     call read_input  
     
     ; FORMULA
-    sub ax, 273
+    sub ax, 27315        ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas
     mov bx, 9   
-    mul bx        
+    imul bx        
     mov bx, 5  
-    div bx
-    add ax, 32
+    idiv bx
+    add ax, 3200     ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas
     
                  
 
@@ -341,9 +341,9 @@ pulgadas_centimetros:
     
     ; FORMULA
     mov bx, 254   
-    mul bx        
+    imul bx        
     mov bx, 100  
-    div bx
+    idiv bx
     
                  
 
@@ -375,9 +375,9 @@ pies_centimetros:
     
     ; FORMULA
     mov bx, 3048   
-    mul bx        
+    imul bx        
     mov bx, 100  
-    div bx
+    idiv bx
     
                  
 
@@ -409,9 +409,9 @@ yardas_centimetros:
     
     ; FORMULA
     mov bx, 9144   
-    mul bx        
+    imul bx        
     mov bx, 100  
-    div bx
+    idiv bx
     
                  
 
@@ -443,10 +443,10 @@ millas_kilometros:
     call read_input  
     
     ; FORMULA
-    mov bx, 1609   
-    mul bx        
-    mov bx, 1000  
-    div bx
+    mov bx, 16093   
+    imul bx        
+    mov bx, 10000  
+    idiv bx
     
                  
 
@@ -478,9 +478,9 @@ centimetros_pulgadas:
     
     ; FORMULA
     mov bx, 100   
-    mul bx        
+    imul bx        
     mov bx, 254  
-    div bx
+    idiv bx
     
                  
 
@@ -510,9 +510,9 @@ centimetros_pies:
     
     ; FORMULA
     mov bx, 100   
-    mul bx        
+    imul bx        
     mov bx, 3048  
-    div bx
+    idiv bx
     
                  
 
@@ -542,9 +542,9 @@ centimetros_yardas:
     
     ; FORMULA
     mov bx, 100   
-    mul bx        
+    imul bx        
     mov bx, 9144  
-    div bx
+    idiv bx
     
                  
 
@@ -574,10 +574,10 @@ kilometros_millas:
     call read_input  
     
     ; FORMULA
-    mov bx, 1000   
-    mul bx        
-    mov bx, 1609  
-    div bx
+    mov bx, 10000   
+    imul bx        
+    mov bx, 16093  
+    idiv bx
     
                  
 
@@ -648,9 +648,9 @@ onzas_kilos:
     call read_input  
 
     mov bx, 1000   
-    mul bx        
+    imul bx        
     mov bx, 35274  
-    div bx        
+    idiv bx        
 
     call int_to_string  
 
@@ -669,6 +669,8 @@ onzas_kilos:
 
     jmp ask_continue
 
+
+;Realiza la conversion de libras a kilos
 libras_kilos:
     lea dx, valor_entrada
     mov ah, 9
@@ -677,9 +679,9 @@ libras_kilos:
     call read_input  
 
     mov bx, 1000   
-    mul bx        
+    imul bx        
     mov bx, 2205  
-    div bx        
+    idiv bx        
 
     call int_to_string  
 
@@ -698,7 +700,7 @@ libras_kilos:
 
     jmp ask_continue      
     
-
+;Realiza la conversion de toneladas a kilos
 toneladas_kilos:
     lea dx, valor_entrada
     mov ah, 9
@@ -707,7 +709,7 @@ toneladas_kilos:
     call read_input  
 
     mov bx, 1000   
-    mul bx        
+    imul bx        
          
 
     call int_to_string  
@@ -726,7 +728,8 @@ toneladas_kilos:
     int 21h
 
     jmp ask_continue
-    
+
+;Realiza la conversion de kilos a onzas    
 kilos_onzas:
     lea dx, valor_entrada
     mov ah, 9
@@ -735,9 +738,9 @@ kilos_onzas:
     call read_input  
 
     mov bx, 35274   
-    mul bx        
+    imul bx        
     mov bx, 1000  
-    div bx        
+    idiv bx        
 
     call int_to_string  
 
@@ -757,7 +760,7 @@ kilos_onzas:
     jmp ask_continue
     
     
-
+;Realiza la conversion de kilos a libras
 kilos_libras:
     lea dx, valor_entrada
     mov ah, 9
@@ -766,9 +769,9 @@ kilos_libras:
     call read_input  
 
     mov bx, 2205   
-    mul bx        
+    imul bx        
     mov bx, 1000  
-    div bx        
+    idiv bx        
 
     call int_to_string  
 
@@ -788,7 +791,7 @@ kilos_libras:
     jmp ask_continue 
     
     
-    
+;Realiza la conversion de kilos a toneladas    
 kilos_toneladas:
     lea dx, valor_entrada
     mov ah, 9
@@ -797,7 +800,7 @@ kilos_toneladas:
     call read_input  
        
     mov bx, 1000  
-    div bx        
+    idiv bx        
 
     call int_to_string  
 
@@ -823,6 +826,7 @@ invalid_option:
     int 21h
     jmp start
 
+;Consulta si se quiere seguir realizando otras conversiones
 ask_continue:
     lea dx, continue_msg
     mov ah, 9
@@ -863,6 +867,8 @@ convert_loop:
     jmp convert_loop    
 
 convert_done:
+    mov bx, 100     ;los valores se escalan por 100 para reservar dos decimales para cada resultado(los dos ceros del 100) 
+    mul bx
     ret
 
 int_to_string:
@@ -882,16 +888,48 @@ convert_to_string_loop:
     jne convert_to_string_loop
 
     lea di, result
+    mov cx, bx
+    sub cx, 2
+    jle no_decimal
+    
+    
 store_loop:
     pop dx              
+    cmp bx, 2          
+    jne no_point
+    mov byte ptr [di], '.'  
+    inc di 
+    
+no_point:
     mov [di], dl        
     inc di              
     dec bx              
     cmp bx, 0           
     jne store_loop
 
-    mov byte ptr [di], '$'
-    ret 
+    jmp finish_string
+    
+    
+no_decimal:             ; Caso especial: menos de 2 dígitos
+    cmp bx, 0
+    je add_zeros
+store_no_decimal:
+    pop dx
+    mov [di], dl
+    inc di
+    dec bx
+    jnz store_no_decimal
+add_zeros:
+    mov byte ptr [di], '.'  ; Agregar punto
+    inc di
+    mov byte ptr [di], '0'  ; Agregar ceros
+    inc di
+    mov byte ptr [di], '0'
+    inc di
+
+finish_string:
+    mov byte ptr [di], '$'  ; Terminar cadena
+    ret
 
 ; Salir del programa
 exit:
