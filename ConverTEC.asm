@@ -15,6 +15,7 @@ data segment
     result_msg db "El resultado de la conversion es: $"
     continue_msg db "Presione 1 para continuar o 2 para salir: $"
     invalid_msg db "Opcion invalida, por favor intente de nuevo.", 0Dh, 0Ah, "$"
+    invalid_input_msg db "El valor de entrada no es numerico, porfavor digite un valor valido para la conversion.", 0Dh, 0Ah, "$"
     buffer db 10 dup('$')  
     result db 10 dup('$')  
     newline db 0Dh, 0Ah, "$"  
@@ -171,7 +172,7 @@ celsius_kelvin:
     call read_input  
     
     ; FORMULA
-    add ax, 27300      ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas           
+    add ax, 27315      ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas           
 
     call int_to_string  
 
@@ -199,7 +200,7 @@ kelvin_celsius:
     call read_input  
     
     ; FORMULA
-    sub ax, 27300      ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas           
+    sub ax, 27315      ;Se escalan los valores para AX ya que este se escalo para guardar campo para los decimales con dos ceros demas           
 
     call int_to_string  
 
@@ -842,29 +843,49 @@ ask_continue:
 
 ; Funcion para leer la entrada de datos y guardarla en un buffer
 read_input:
-    lea dx, buffer
-    mov ah, 0Ah
+    lea dx, buffer     ; Cargar direccion del buffer
+    mov ah, 0Ah        
     int 21h
 
-    lea si, buffer + 2  
-    mov cx, 0           
-    mov ax, 0           
+    lea si, buffer + 2 ; Saltar los primeros dos bytes del buffer
+    mov cx, 0          ; Contador de caracteres
+    xor ax, ax         ; Limpiar AX
+
+validate_input:
+    mov bl, [si]        ; Obtener el caracter actual
+    cmp bl, 0Dh         ; Verificar si es ENTER
+    je convert_loop     
+    cmp bl, '0'         ; Verificar si es menor que '0'
+    jb invalid_input    
+    cmp bl, '9'         ; Verificar si es mayor que '9'
+    ja invalid_input    
+
+    inc si              ; Avanzar al siguiente caracter
+    inc cx              ; Incrementar contador
+    jmp validate_input  
+
+invalid_input:
+    lea dx, invalid_input_msg  ; Mensaje de error
+    mov ah, 9
+    int 21h
+    jmp read_input       ; Vuelve a pedir una entrada que sea valida
 
 convert_loop:
-    mov bl, [si]        
-    cmp bl, 0           
-    je convert_done     
-    cmp bl, '0'         
-    jb convert_done     
-    cmp bl, '9'
-    ja convert_done     
+    lea si, buffer + 2  ; Restablece el puntero
+    mov cx, 0          
+    xor ax, ax         
 
+convert_digits:
+    mov bl, [si]        
+    cmp bl, 0Dh         
+    je convert_done     
     sub bl, '0'         
     mov dx, 10
     mul dx              
     add ax, bx          
     inc si              
-    jmp convert_loop    
+    jmp convert_digits    
+
 
 convert_done:
     mov bx, 100     ;los valores se escalan por 100 para reservar dos decimales para cada resultado(los dos ceros del 100) 
@@ -910,7 +931,7 @@ no_point:
     jmp finish_string
     
     
-no_decimal:             ; Caso especial: menos de 2 dígitos
+no_decimal:             ; Caso especial: menos de 2 digitos
     cmp bx, 0
     je add_zeros
 store_no_decimal:
