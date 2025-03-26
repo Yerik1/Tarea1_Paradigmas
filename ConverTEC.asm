@@ -25,7 +25,11 @@ stack segment
 ends
 
 code segment
-start:  
+start:   
+
+    jmp inicio
+
+inicio:  
     ; Inicializa los segmentos 
     mov ax, data
     mov ds, ax
@@ -96,20 +100,20 @@ conversiones_temperatura:
    
 
 fahrenheit_celsius:
-    
     lea dx, valor_entrada
     mov ah, 9
     int 21h
 
     call read_input  
-    
-    ; FORMULA
+
+    ; FORMULA ( (F - 32) * 5 ) / 9
     sub ax, 32         
     mov bx, 5  
-    mul bx
+    imul bx
     mov bx, 9
-    div bx      
+    idiv bx             ; División con signo (para manejar negativos)
 
+    mov dx, ax          ; Guardar el resultado en DX antes de llamar a int_to_string
     call int_to_string  
 
     lea dx, newline
@@ -125,8 +129,7 @@ fahrenheit_celsius:
     mov ah, 9
     int 21h
 
-    jmp ask_continue   
-    
+    jmp ask_continue
 
 ; Conversion de celsius a fahrenheit
 
@@ -143,7 +146,8 @@ celsius_fahrenheit:
     mov bx, 5  
     idiv bx
     add ax, 32        
-
+    
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -172,7 +176,9 @@ celsius_kelvin:
     
     ; FORMULA
     add ax, 273                
-
+    
+    
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -200,7 +206,8 @@ kelvin_celsius:
     
     ; FORMULA
     sub ax, 273                
-
+    
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -230,11 +237,13 @@ fahrenheit_kelvin:
      ; FORMULA  
     sub ax, 32        
     mov bx, 5  
-    mul bx  
+    imul bx  
     mov bx, 9
-    div bx
+    idiv bx
     add ax, 273    
-
+    
+    
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -264,13 +273,13 @@ kelvin_fahrenheit:
     ; FORMULA
     sub ax, 273
     mov bx, 9   
-    mul bx        
+    imul bx        
     mov bx, 5  
-    div bx
+    idiv bx
     add ax, 32
     
                  
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -341,12 +350,12 @@ pulgadas_centimetros:
     
     ; FORMULA
     mov bx, 254   
-    mul bx        
+    imul bx        
     mov bx, 100  
-    div bx
+    idiv bx
     
                  
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -375,12 +384,12 @@ pies_centimetros:
     
     ; FORMULA
     mov bx, 3048   
-    mul bx        
+    imul bx        
     mov bx, 100  
-    div bx
+    idiv bx
     
                  
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -409,12 +418,12 @@ yardas_centimetros:
     
     ; FORMULA
     mov bx, 9144   
-    mul bx        
+    imul bx        
     mov bx, 100  
-    div bx
+    idiv bx
     
                  
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -444,12 +453,12 @@ millas_kilometros:
     
     ; FORMULA
     mov bx, 1609   
-    mul bx        
+    imul bx        
     mov bx, 1000  
-    div bx
+    idiv bx
     
                  
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -478,12 +487,12 @@ centimetros_pulgadas:
     
     ; FORMULA
     mov bx, 100   
-    mul bx        
+    imul bx        
     mov bx, 254  
-    div bx
+    idiv bx
     
                  
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -510,12 +519,12 @@ centimetros_pies:
     
     ; FORMULA
     mov bx, 100   
-    mul bx        
+    imul bx        
     mov bx, 3048  
-    div bx
+    idiv bx
     
                  
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -542,12 +551,12 @@ centimetros_yardas:
     
     ; FORMULA
     mov bx, 100   
-    mul bx        
+    imul bx        
     mov bx, 9144  
-    div bx
+    idiv bx
     
                  
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -575,12 +584,12 @@ kilometros_millas:
     
     ; FORMULA
     mov bx, 1000   
-    mul bx        
+    imul bx        
     mov bx, 1609  
-    div bx
+    idiv bx
     
                  
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -648,10 +657,11 @@ onzas_kilos:
     call read_input  
 
     mov bx, 1000   
-    mul bx        
+    imul bx        
     mov bx, 35274  
-    div bx        
-
+    idiv bx        
+    
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -677,10 +687,11 @@ libras_kilos:
     call read_input  
 
     mov bx, 1000   
-    mul bx        
+    imul bx        
     mov bx, 2205  
-    div bx        
-
+    idiv bx        
+    
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -707,9 +718,9 @@ toneladas_kilos:
     call read_input  
 
     mov bx, 1000   
-    mul bx        
+    imul bx        
          
-
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -735,10 +746,11 @@ kilos_onzas:
     call read_input  
 
     mov bx, 35274   
-    mul bx        
+    imul bx        
     mov bx, 1000  
-    div bx        
-
+    idiv bx        
+    
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -766,10 +778,11 @@ kilos_libras:
     call read_input  
 
     mov bx, 2205   
-    mul bx        
+    imul bx        
     mov bx, 1000  
-    div bx        
-
+    idiv bx        
+    
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -797,8 +810,9 @@ kilos_toneladas:
     call read_input  
        
     mov bx, 1000  
-    div bx        
-
+    idiv bx        
+    
+    mov dx, ax
     call int_to_string  
 
     lea dx, newline
@@ -832,7 +846,7 @@ ask_continue:
     sub al, '0'   
 
     cmp al, 1
-    je start  
+    je inicio  
     cmp al, 2
     je exit  
 
@@ -845,6 +859,13 @@ read_input:
     lea si, buffer + 2  
     mov cx, 0           
     mov ax, 0           
+    mov bl, [si]         ; Leer primer carácter (posible signo)
+
+    cmp bl, '-'
+    jne convert_loop     ; Si no es '-', continúa conversión normal
+
+    inc si               ; Si es '-', avanzar al siguiente carácter
+    mov cx, 1           ; CX = 1 indica número negativo
 
 convert_loop:
     mov bl, [si]        
@@ -857,41 +878,55 @@ convert_loop:
 
     sub bl, '0'         
     mov dx, 10
-    mul dx              
+    imul dx               ; Multiplicar AX por 10
     add ax, bx          
-    inc si              
+    inc si               
     jmp convert_loop    
 
 convert_done:
+    cmp cx, 1           
+    jne no_negate       
+    neg ax               ; Si era negativo, cambiar signo de AX
+
+no_negate:
     ret
 
+
 int_to_string:
-    lea di, result
-    mov cx, 10          
-    mov bx, 0           
-               
-               
-; Funcion para convertir un numero entero a su representacion en string               
+    pusha                     ; Guarda los registros usados
+    lea di, result            ; Cargar dirección de result en DI
+    mov cx, 10                ; Configurar divisor para base 10
+    mov bx, 0                 ; Inicializar contador de dígitos
+    mov ax, dx                ; Mover el número a AX (usar DX para cálculos)
+
+    cmp ax, 0                 ; Comparar si el número es negativo
+    jge convert_to_string_loop ; Si es positivo, saltar a conversión
+
+    neg ax                    ; Si es negativo, hacerlo positivo
+    mov byte [di], '-'        ; Agregar el signo negativo al inicio
+    inc di                    ; Moverse al siguiente espacio
+
 convert_to_string_loop:
-    xor dx, dx          
-    div cx              
-    add dl, '0'         
-    push dx             
-    inc bx              
-    cmp ax, 0           
-    jne convert_to_string_loop
+    xor dx, dx                ; Limpiar DX antes de dividir
+    div cx                    ; AX / 10 -> Cociente en AX, residuo en DX
+    add dl, '0'               ; Convertir residuo en ASCII
+    push dx                   ; Guardar el dígito en la pila
+    inc bx                    ; Aumentar contador de dígitos
+    test ax, ax               ; ¿AX es 0?
+    jnz convert_to_string_loop ; Si no, seguir dividiendo
 
-    lea di, result
 store_loop:
-    pop dx              
-    mov [di], dl        
-    inc di              
-    dec bx              
-    cmp bx, 0           
-    jne store_loop
+    pop dx                    ; Recuperar dígito desde la pila
+    mov [di], dl              ; Guardarlo en el string
+    inc di                    ; Avanzar en la cadena
+    dec bx                    ; Decrementar contador de dígitos
+    cmp bx, 0                 ; ¿Quedan más dígitos?
+    jne store_loop            ; Si sí, seguir almacenando
 
-    mov byte ptr [di], '$'
-    ret 
+    mov byte ptr [di], '$'    ; Agregar terminador de cadena (para DOS)
+    popa                      ; Restaurar registros
+    ret
+
 
 ; Salir del programa
 exit:
